@@ -27,7 +27,8 @@ class authController {
             }
             const hashPassword = bcrypt.hashSync(password, 7)
             const userRole = await Role.findOne({value: "USER"})
-            const user = new User({firstname,lastname, email, password: hashPassword, roles: [userRole.value]})
+            const basket = []
+            const user = new User({firstname,lastname, email, password: hashPassword, roles: [userRole.value]}, basket)
             await user.save()
             return res.json({message: "Регистрация прошла успешно!"})
         } catch (error) {
@@ -64,7 +65,7 @@ class authController {
             }
             const decoderData = jwt.verify(token, secret)
             const user = await User.findOne({email: decoderData.email })
-            return res.json({firstname: user.firstname, lastname: user.lastname, email: user.email, roles: user.roles})
+            return res.json({firstname: user.firstname, lastname: user.lastname, email: user.email, roles: user.roles, basket: user.basket})
         } catch (error) {
             return res.status(403).json({message: "Пользователь не авторизован!"})
         }

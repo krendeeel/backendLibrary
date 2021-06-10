@@ -5,7 +5,8 @@ const User = new Schema({
     lastname: {type: String, required: true},
     email: {type: String, unique: true, required: true},
     password: {type: String, required: true},
-    roles:[{type: String, ref: 'Role'}]
+    roles:[{type: String, ref: 'Role'}],
+    basket:[{type: String}]
 })
 
 module.exports = model("User", User)
