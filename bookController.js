@@ -26,7 +26,7 @@ class bookController {
             return res.json({message: "Регистрация прошла успешно!"})
         } catch (error) {
             console.log(error)
-            res.status(400).json({message: 'Ошибка региutyuстрации', error})
+            res.status(400).json({message: 'Ошибка регистрации', error})
         }
     }
 
@@ -58,7 +58,7 @@ class bookController {
         try {
             let {page, part, genre, author, city} = req.query;
             if(!page) page = 1;
-            if(!part) part = 18;
+            if(!part) part = 12;
             if(genre && author && city) {
                 const books = await Book.find({genre, author, city})
                 return res.json({total: books.length, books: books.slice((part*page - part), (part*page))})
@@ -99,7 +99,7 @@ class bookController {
             let {name, email, reserv} = req.query;
             const newUser = await User.findOne({email})
             const newBook = await Book.findOne({name})
-            const newBasket = newUser.basket
+            const newBasket = [...newUser.basket]
             let reservation
             if(newUser && newBook){
                 if(reserv === "1"){
@@ -139,9 +139,9 @@ class bookController {
                     description: newBook.description,
                     reservation: reservation
                 },
-            (err, book) => {
-                if(err){
-                    return res.status(400).json({error:'error'})
+            (error, book) => {
+                if(error){
+                    return res.status(400).json({error})
                 }
             })
             await User.findOneAndUpdate({email}, 
@@ -154,14 +154,14 @@ class bookController {
                     roles: newUser.roles,
                     basket: newBasket
                 },
-            (err, user) => {
-                if(err){
-                    return res.status(400).json({error:'error'})
+            (error, user) => {
+                if(error){
+                    return res.status(400).json({error})
                 }
             })
             return res.json({message: 'success', name})
         } catch (error) {
-            return res.status(403).json({message: "Ошибка запроса",error})
+            return res.status(403).json({message: "Ошибка запроса", error})
         }
     }
 }
